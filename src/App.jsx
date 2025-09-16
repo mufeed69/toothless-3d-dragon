@@ -5,7 +5,10 @@ function App() {
 
   return (
     <>
-    <ModelViewer />
+    <ModelViewer 
+        modelPath="/models/toothless-dragon.glb"  
+        background="studio" // or "sky" or "none"
+      />
     </>
   )
 }

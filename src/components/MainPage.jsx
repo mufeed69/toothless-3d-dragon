@@ -24,16 +24,9 @@ function Loader() {
 // Example model wrapper: loads a GLTF model and applies a small spin animation
 function Model({ path }) {
   const gltf = useGLTF(path, true)
-  const ref = useRef()
-
-  // tiny rotation animation
-  useFrame((state, delta) => {
-    if (!ref.current) return
-    ref.current.rotation.y += delta * 0.3
-  })
 
   return (
-    <group ref={ref} dispose={null}>
+    <group dispose={null}>
       <primitive object={gltf.scene} />
     </group>
   )
@@ -55,10 +48,10 @@ export default function ModelViewer({ modelPath = null, background = 'studio', a
   const hasModel = Boolean(modelPath)
 
   return (
-    <div className="w-full h-[600px] rounded-2xl overflow-hidden shadow-lg">
+    <div className="w-full h-screen rounded-2xl overflow-hidden shadow-lg">
       <Canvas
         shadows
-        camera={{ position: [0, 1.5, 3], fov: 50 }}
+        camera={{ position: [0, 40, -100], fov: 50 }}
         gl={{ antialias: true }}
       >
         {/* Ambient + key lights */}
@@ -70,7 +63,6 @@ export default function ModelViewer({ modelPath = null, background = 'studio', a
         {background === 'sky' && <Environment preset="sunset" />}
 
         <Suspense fallback={<Loader />}>
-          <Center>
             {hasModel ? (
               <Float speed={1} rotationIntensity={0.2} floatIntensity={0.5}>
                 <Model path={modelPath} />
@@ -81,13 +73,10 @@ export default function ModelViewer({ modelPath = null, background = 'studio', a
                 <meshStandardMaterial color="#8ea7ff" />
               </mesh>
             )}
-          </Center>
-
-          <Ground />
         </Suspense>
 
         {/* Orbit controls: allow rotate/zoom/pan */}
-        <OrbitControls enablePan enableRotate enableZoom />
+        <OrbitControls minDistance={2} maxDistance={20} />
       </Canvas>
     </div>
   )
